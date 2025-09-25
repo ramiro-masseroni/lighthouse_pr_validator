@@ -36,9 +36,9 @@ export default function Home() {
           />
           <ol>
             <li>
-              Get started by editing <code>src/pages/index.tsx</code>.
+              Limpiate el <code>src/pages/index.tsx</code>.
             </li>
-            <li>Save and see your changes instantly.</li>
+            <li>Guarda y ve tus cambios al instante, loco.</li>
           </ol>
 
           <div className={styles.ctas}>
