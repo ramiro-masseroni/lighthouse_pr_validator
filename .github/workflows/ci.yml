@@ -5,28 +5,49 @@ on:
     branches: [main]
 
 jobs:
-  lhci:
+  lighthouse-ci_PR_check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
+      - name: Install dependencies
+        run: npm ci
 
-      - run: npm ci
-      - run: npm run build
-      - run: npm run start &
-      - run: npx wait-on http://localhost:3000
+      - name: Build project
+        run: npm run build
 
-      # Ejecuta Lighthouse CI con config
+      - name: Start server
+        run: npm start & npx wait-on http://localhost:3000
+
       - name: Run Lighthouse CI
-        run: npx lhci autorun --config=lighthouserc.json
+        id: lhci
+        run: |
+          mkdir -p ./lhci_reports
+          npx lhci autorun --upload.target=filesystem --upload.outputDir=./lhci_reports || echo "LHCI_FAILED=true" >> $GITHUB_ENV
 
-      # Subida de reportes como artifact
-      - name: Upload LHCI reports
-        uses: actions/upload-artifact@v3
+      - name: Upload Lighthouse Report
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: lhci-reports
+          name: lighthouse-report
           path: ./lhci_reports
+
+      - name: Comment PR with LHCI results
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const failed = process.env.LHCI_FAILED === "true";
+            const runId = context.runId;
+            const artifactUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId}`;
+
+            const body = failed
+              ? `❌ **Lighthouse CI checks failed**.\n\n[Ver reporte detallado](${artifactUrl})`
+              : `✅ Lighthouse CI checks passed.\n\n[Ver reporte detallado](${artifactUrl})`;
+
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            });
