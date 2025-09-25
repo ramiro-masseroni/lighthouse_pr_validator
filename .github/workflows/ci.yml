@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 jobs:
-  lighthouse-ci_PR_check:
+  lhci:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,8 +36,8 @@ jobs:
         id: lhci-summary
         run: |
           node -e "const fs=require('fs');
-          const summary=JSON.parse(fs.readFileSync('./lhci_reports/summary.json','utf8'));
-          const cats=summary.categories;
+          const report=JSON.parse(fs.readFileSync('./lhci_reports/lhr-0.json','utf8'));
+          const cats=report.categories;
           console.log('PERF='+Math.round(cats.performance.score*100));
           console.log('ACC='+Math.round(cats.accessibility.score*100));
           console.log('BP='+Math.round(cats['best-practices'].score*100));
