@@ -47,7 +47,7 @@ jobs:
             process.exit(1);
           }
           const report=JSON.parse(fs.readFileSync(summaryPath,'utf8'));
-          const cats=report.categories;
+          const cats=report.summary;
           console.log('PERF='+Math.round(cats.performance.score*100));
           console.log('ACC='+Math.round(cats.accessibility.score*100));
           console.log('BP='+Math.round(cats['best-practices'].score*100));
@@ -66,10 +66,10 @@ jobs:
 
             const body = `
             📊 **Lighthouse Scores**
-            - Performance: ${perf}
-            - Accessibility: ${acc}
-            - Best Practices: ${bp}
-            - SEO: ${seo}
+            - Performance: ${perf}%
+            - Accessibility: ${acc}%
+            - Best Practices: ${bp}%
+            - SEO: ${seo}%
             `;
 
             await github.rest.issues.createComment({
