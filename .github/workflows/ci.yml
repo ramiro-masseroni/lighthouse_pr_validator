@@ -23,7 +23,7 @@ jobs:
         id: lhci
         run: |
           mkdir -p ./lhci_reports
-          npx lhci autorun --upload.target=filesystem --upload.outputDir=./lhci_reports || echo "LHCI_FAILED=true" >> $GITHUB_ENV
+          npx lhci autorun --reporter json --reporter json-summary --reporter html --upload.target=filesystem --upload.outputDir=./lhci_reports || echo "LHCI_FAILED=true" >> $GITHUB_ENV
 
       - name: Upload Lighthouse Report
         if: always()
@@ -32,11 +32,21 @@ jobs:
           name: lighthouse-report
           path: ./lhci_reports
 
+      - name: Debug LHCI reports
+        run: ls -la ./lhci_reports
+
+
       - name: Parse Lighthouse summary
         id: lhci-summary
         run: |
           node -e "const fs=require('fs');
-          const report=JSON.parse(fs.readFileSync('./lhci_reports/lhr-0.json','utf8'));
+          const summaryPath = './lhci_reports/manifest.json';
+
+          if (!fs.existsSync(summaryPath)) {
+            console.error('Lighthouse summary report not found!');
+            process.exit(1);
+          }
+          const report=JSON.parse(fs.readFileSync(summaryPath,'utf8'));
           const cats=report.categories;
           console.log('PERF='+Math.round(cats.performance.score*100));
           console.log('ACC='+Math.round(cats.accessibility.score*100));
