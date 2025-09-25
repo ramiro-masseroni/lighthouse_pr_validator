@@ -47,7 +47,7 @@ jobs:
             process.exit(1);
           }
           const report=JSON.parse(fs.readFileSync(summaryPath,'utf8'));
-          console.log('Lighthouse Report Summary:', report);
+          console.log(report);
           const cats=report.summary;
           console.log('PERF='+Math.round(cats.performance.score*100));
           console.log('ACC='+Math.round(cats.accessibility.score*100));
