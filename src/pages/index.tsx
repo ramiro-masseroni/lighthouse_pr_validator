@@ -29,16 +29,16 @@ export default function Home() {
           <Image
             className={styles.logo}
             src="/next.svg"
-            alt="Next.js logo"
+            alt=""
             width={180}
             height={38}
             priority
           />
           <ol>
-            <li>
-              Limpiate el <code>src/pages/index.tsx</code>.
+            <li style={{color: '#eaeaea'}}>
+              Limpiate el <code style={{color: '#f5f5f5'}}>src/pages/index.tsx</code>.
             </li>
-            <li>Guarda y ve tus cambios al instante, loco.</li>
+            <li style={{color: '#eaeaea'}}>Guarda y ve tus cambios al instante, loco.</li>
           </ol>
 
           <div className={styles.ctas}>
@@ -51,7 +51,7 @@ export default function Home() {
               <Image
                 className={styles.logo}
                 src="/vercel.svg"
-                alt="Vercel logomark"
+                alt=""
                 width={20}
                 height={20}
               />
@@ -76,7 +76,7 @@ export default function Home() {
             <Image
               aria-hidden
               src="/file.svg"
-              alt="File icon"
+              alt=""
               width={16}
               height={16}
             />
@@ -90,7 +90,7 @@ export default function Home() {
             <Image
               aria-hidden
               src="/window.svg"
-              alt="Window icon"
+              alt=""
               width={16}
               height={16}
             />
@@ -104,7 +104,7 @@ export default function Home() {
             <Image
               aria-hidden
               src="/globe.svg"
-              alt="Globe icon"
+              alt=""
               width={16}
               height={16}
             />
