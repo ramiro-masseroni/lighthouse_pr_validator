@@ -1,0 +1,14 @@
+[
+  {
+    "url": "http://localhost:3000/",
+    "isRepresentativeRun": true,
+    "htmlPath": "/home/runner/work/lighthouse_pr_validator/lighthouse_pr_validator/lhci_reports/localhost--2025_09_25_20_17_12.report.html",
+    "jsonPath": "/home/runner/work/lighthouse_pr_validator/lighthouse_pr_validator/lhci_reports/localhost--2025_09_25_20_17_12.report.json",
+    "summary": {
+      "performance": 1,
+      "accessibility": 0.96,
+      "best-practices": 1,
+      "seo": 1
+    }
+  }
+]
