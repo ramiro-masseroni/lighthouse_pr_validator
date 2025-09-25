@@ -26,7 +26,7 @@ jobs:
 
       # Subida de reportes como artifact
       - name: Upload LHCI reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: lhci-reports
           path: ./lhci_reports
