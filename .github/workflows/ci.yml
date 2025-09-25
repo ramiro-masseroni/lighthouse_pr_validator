@@ -30,7 +30,12 @@ jobs:
       - name: Run Lighthouse CI
         run: |
           mkdir -p ./lhci_reports
-          npx lhci autorun --numberOfRuns=1 --upload.target=filesystem --upload.outputDir=./lhci_reports || echo "LHCI_FAILED=true" >> $GITHUB_ENV
+          npx lhci autorun \
+            --numberOfRuns=1 \
+            --upload.target=filesystem \
+            --upload.outputDir=./lhci_reports \
+            --assert \
+            --exit-on-error=false || echo "LHCI_FAILED=true" >> $GITHUB_ENV
 
       # 7️⃣ Parse manifest.json para sacar scores
       - name: Parse Lighthouse manifest
