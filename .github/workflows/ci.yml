@@ -1,0 +1,32 @@
+name: Lighthouse CI
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  lhci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - run: npm ci
+      - run: npm run build
+      - run: npm run start &
+      - run: npx wait-on http://localhost:3000
+
+      # Ejecuta Lighthouse CI con config
+      - name: Run Lighthouse CI
+        run: npx lhci autorun --config=lighthouserc.json
+
+      # Subida de reportes como artifact
+      - name: Upload LHCI reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: lhci-reports
+          path: ./lhci_reports
