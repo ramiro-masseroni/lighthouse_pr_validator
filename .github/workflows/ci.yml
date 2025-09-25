@@ -35,7 +35,7 @@ jobs:
             --upload.target=filesystem \
             --upload.outputDir=./lhci_reports \
             --assert \
-            --exit-on-error=false || echo "LHCI_FAILED=true" >> $GITHUB_ENV
+            --exit-on-error=true || echo "LHCI_FAILED=true" >> $GITHUB_ENV
 
       # 7️⃣ Parse manifest.json para sacar scores
       - name: Parse Lighthouse manifest
