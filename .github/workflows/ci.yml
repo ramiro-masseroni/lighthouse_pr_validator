@@ -2,60 +2,71 @@ name: Lighthouse CI
 
 on:
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   lhci:
     runs-on: ubuntu-latest
     steps:
+      # 1️⃣ Checkout
       - uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: npm ci
+      # 2️⃣ Setup Node
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
 
-      - name: Build project
-        run: npm run build
+      # 3️⃣ Install dependencies
+      - run: npm ci
 
-      - name: Start server
-        run: npm start & npx wait-on http://localhost:3000
+      # 4️⃣ Build
+      - run: npm run build
 
+      # 5️⃣ Start dev server
+      - run: npm start &
+      - run: npx wait-on http://localhost:3000
+
+      # 6️⃣ Run LHCI
       - name: Run Lighthouse CI
-        id: lhci
         run: |
           mkdir -p ./lhci_reports
-          npx lhci autorun --reporter json --reporter json-summary --reporter html --upload.target=filesystem --upload.outputDir=./lhci_reports || echo "LHCI_FAILED=true" >> $GITHUB_ENV
+          npx lhci autorun --numberOfRuns=1 --upload.target=filesystem --upload.outputDir=./lhci_reports || echo "LHCI_FAILED=true" >> $GITHUB_ENV
 
-      - name: Upload Lighthouse Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: lighthouse-report
-          path: ./lhci_reports
-
-      - name: Debug LHCI reports
-        run: ls -la ./lhci_reports
-
-
-      - name: Parse Lighthouse summary
+      # 7️⃣ Parse manifest.json para sacar scores
+      - name: Parse Lighthouse manifest
         id: lhci-summary
         run: |
-          node -e "const fs=require('fs');
-          const summaryPath = './lhci_reports/manifest.json';
-
-          if (!fs.existsSync(summaryPath)) {
-            console.error('Lighthouse summary report not found!');
+          node -e "
+          const fs = require('fs');
+          const manifestPath = './lhci_reports/manifest.json';
+          if (!fs.existsSync(manifestPath)) {
+            console.error('Manifest JSON no encontrado!');
             process.exit(1);
           }
-          const report=JSON.parse(fs.readFileSync(summaryPath,'utf8'));
-          console.log(report);
-          const cats=report.summary;
-          console.log('PERF='+Math.round(cats.performance.score*100));
-          console.log('ACC='+Math.round(cats.accessibility.score*100));
-          console.log('BP='+Math.round(cats['best-practices'].score*100));
-          console.log('SEO='+Math.round(cats.seo.score*100));
-          " >> $GITHUB_ENV
+          const manifest = JSON.parse(fs.readFileSync(manifestPath,'utf8'));
+          if (!manifest.length) {
+            console.error('Manifest JSON vacío!');
+            process.exit(1);
+          }
+          const cats = manifest[0].summary;
+          const perf = Math.round(cats.performance * 100);
+          const acc = Math.round(cats.accessibility * 100);
+          const bp = Math.round(cats['best-practices'] * 100);
+          const seo = Math.round(cats.seo * 100);
+          fs.appendFileSync(process.env.GITHUB_ENV, \`PERF=${perf}\nACC=${acc}\nBP=${bp}\nSEO=${seo}\n\`);
+          "
 
-      - name: Comment PR with LHCI scores
+      # 8️⃣ Publicar HTML en GitHub Pages
+      - name: Publish LHCI HTML to Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./lhci_reports
+          publish_branch: gh-pages
+
+      # 9️⃣ Comentar en el PR
+      - name: Comment PR with LHCI scores & report link
         if: always() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
@@ -65,12 +76,13 @@ jobs:
             const bp = process.env.BP;
             const seo = process.env.SEO;
 
+
             const body = `
-            📊 **Lighthouse Scores**
-            - Performance: ${perf}%
-            - Accessibility: ${acc}%
-            - Best Practices: ${bp}%
-            - SEO: ${seo}%
+            📊 **Lighthouse CI Scores**
+            - Performance: ${perf}
+            - Accessibility: ${acc}
+            - Best Practices: ${bp}
+            - SEO: ${seo}
             `;
 
             await github.rest.issues.createComment({
