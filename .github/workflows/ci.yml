@@ -93,13 +93,7 @@ jobs:
               process.exit(1);
             } else {
               console.log('Lighthouse CI passed all assertions.');
+              process.exit(0);
             }
 
-      - name: Finish failure
-        if: env.LHCI_FAILED == 'true'
-        run: exit 1
-
-      - name: Finish success
-        if: env.LHCI_FAILED != 'true'
-        run: echo "Lighthouse CI passed all assertions."
 
