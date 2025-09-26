@@ -66,27 +66,26 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const function createFailComment() {
-            const perf = process.env.PERF;
-            const acc = process.env.ACC;
-            const bp = process.env.BP;
-            const seo = process.env.SEO;
+            async function createFailComment() {
+              const perf = process.env.PERF;
+              const acc = process.env.ACC;
+              const bp = process.env.BP;
+              const seo = process.env.SEO;
 
+              const body = `
+              📊 **Lighthouse CI Scores**
+              - Performance: ${perf}
+              - Accessibility: ${acc}
+              - Best Practices: ${bp}
+              - SEO: ${seo}
+              `;
 
-            const body = `
-            📊 **Lighthouse CI Scores**
-            - Performance: ${perf}
-            - Accessibility: ${acc}
-            - Best Practices: ${bp}
-            - SEO: ${seo}
-            `;
-
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body
-            });
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body
+              });
             }
 
             if (process.env.LHCI_FAILED === 'true') {
