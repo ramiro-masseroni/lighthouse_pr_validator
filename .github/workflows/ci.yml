@@ -37,6 +37,13 @@ jobs:
             --assert \
             --exit-on-error=true || echo "LHCI_FAILED=true" >> $GITHUB_ENV
 
+      # 6️⃣ Upload LHCI reports as artifacts
+      - name: Upload LHCI reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: lhci-reports
+          path: ./lhci_reports
+
       # 7️⃣ Parse manifest.json para sacar scores
       - name: Parse Lighthouse manifest
         id: lhci-summary
