@@ -90,9 +90,11 @@ jobs:
 
             if (process.env.LHCI_FAILED === 'true') {
               await createFailComment();
-              exit(1);
+              process.exit(1);
             } else {
               console.log('Lighthouse CI passed all assertions.');
+            }
+
       - name: Finish failure
         if: env.LHCI_FAILED == 'true'
         run: exit 1
