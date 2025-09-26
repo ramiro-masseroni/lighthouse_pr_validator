@@ -29,16 +29,17 @@ export default function Home() {
             <Image
               className={styles.logo}
               src="/next.svg"
-              alt="Next.js logo"
+              alt="Next.js logo para representar el logo de Next.js cuando se arranca una nueva página"
               width={180}
               height={38}
               priority
             />
           <ol>
-              <li>
+              <li color="red">
                 Limpiate el <code>src/pages/index.tsx</code>.
               </li>
               <li>Guarda y ve tus cambios al instante, loco.</li>
+              <button onClick={() => console.log('Ignorado')}> --- IGNORE --- </button>
           </ol>
 
           <div className={styles.ctas}>
@@ -91,17 +92,23 @@ export default function Home() {
               aria-hidden
               src="/window.svg"
               alt="Window icon"
-              width={16}
-              height={16}
+              width={64}
+              height={64}
             />
             Examples
           </a>
-          <a
-            href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          
-          >
+            <a
+            onClick={(e) => {
+              e.preventDefault();
+              setTimeout(() => {
+              window.open(
+                "https://nextjs.org?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app",
+                "_blank",
+                "noopener,noreferrer"
+              );
+              }, 5000);
+            }}
+            >
             <Image
               aria-hidden
               src="/globe.svg"
@@ -110,7 +117,7 @@ export default function Home() {
               height={16}
             />
             Go to nextjs.org →
-          </a>
+            </a>
         </footer>
       </div>
     </>
