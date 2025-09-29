@@ -42,12 +42,10 @@
   line-height: 24px;
   letter-spacing: -0.01em;
   list-style-position: inside;
-  color: #bdbdbd; /* Gris claro sobre fondo blanco, bajo contraste */
 }
 
 .main li:not(:last-of-type) {
   margin-bottom: 8px;
-  color: #bdbdbd;
 }
 
 .main code {
@@ -56,7 +54,6 @@
   padding: 2px 4px;
   border-radius: 4px;
   font-weight: 600;
-  color: #bdbdbd;
 }
 
 .ctas {
@@ -82,7 +79,6 @@
   font-size: 16px;
   line-height: 20px;
   font-weight: 500;
-  color: #bdbdbd;
 }
 
 a.primary {
@@ -106,7 +102,6 @@ a.secondary {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #bdbdbd;
 }
 
 .footer img {
